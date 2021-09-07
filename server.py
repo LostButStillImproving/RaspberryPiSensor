@@ -5,9 +5,10 @@ import json
 import time
 
 from _thread import start_new_thread
+import client
 
 SENSOR_INTERVAL = 1
-IP = "0.0.0.0"
+IP = "localhost"
 PORT = 1234
 
 temp = 5
@@ -52,9 +53,8 @@ def handle_connection(client_socket):
         json.dumps(data), "utf-8"))
 
 
-if __name__ == "__main__":
-
-    start_new_thread(record_data, ())
+def listen_for_connection():
+    global address
     while True:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -62,3 +62,10 @@ if __name__ == "__main__":
             s.listen(5)
             s, address = s.accept()
             start_new_thread(handle_connection, (s,))
+
+
+if __name__ == "__main__":
+    start_new_thread(record_data, ())
+    listen_for_connection()
+
+
