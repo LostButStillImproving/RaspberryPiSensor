@@ -10,8 +10,10 @@ def connect_to_server():
         time.sleep(1)
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.connect((IP, PORT))
+            s.send(bytes("get", "utf-8"))
             msg_rec = s.recv(1024).decode("utf-8")
             print(msg_rec)
+
 
 if __name__ == "__main__":
     connect_to_server()
