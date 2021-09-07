@@ -1,11 +1,9 @@
-import random
-import socket
 import datetime
 import json
+import random
+import socket
 import sys
 import time
-import re
-
 from _thread import start_new_thread
 
 SENSOR_INTERVAL = 1
@@ -15,7 +13,6 @@ temp = 0
 humidity = 0
 time_of_measurement = datetime.datetime.utcnow().strftime("%H:%M:%S")
 location = "Home"
-
 data = {"time": time_of_measurement,
         "location": location,
         "temperature": temp,
@@ -52,7 +49,6 @@ def get_humidity():
 
 
 def send_data(client_socket):
-    print(f"connection from {address} has been made at time: {get_time()}")
     client_socket.send(bytes(
         json.dumps(data), "utf-8"))
 
@@ -69,13 +65,13 @@ def handle_connection(s, msg):
 
 
 def listen_for_connection():
-    global address
     while True:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         s.bind((IP, PORT))
         s.listen(5)
         s, address = s.accept()
+        print(f"connection from {address} has been made at time: {get_time()}")
         msg = s.recv(1024).decode("utf-8")
         handle_connection(s, msg)
 
