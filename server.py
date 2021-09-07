@@ -4,6 +4,7 @@ import datetime
 import json
 import sys
 import time
+import re
 
 from _thread import start_new_thread
 
@@ -57,10 +58,14 @@ def send_data(client_socket):
 
 
 def handle_connection(s, msg):
+    global SENSOR_INTERVAL
     if msg == "shutdown":
         sys.exit()
     if msg == "get":
         start_new_thread(send_data, (s,))
+    if "interval" in msg:
+        SENSOR_INTERVAL = int(msg.strip("interval"))
+        print(SENSOR_INTERVAL)
 
 
 def listen_for_connection():
@@ -71,7 +76,6 @@ def listen_for_connection():
         s.bind((IP, PORT))
         s.listen(5)
         s, address = s.accept()
-        print("hi")
         msg = s.recv(1024).decode("utf-8")
         handle_connection(s, msg)
 
