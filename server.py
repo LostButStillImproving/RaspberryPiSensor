@@ -1,22 +1,22 @@
+import RPi.GPIO as GPIO
+import dht11
 import datetime
 import json
-import random
 import socket
 import sys
 import time
 from _thread import start_new_thread
 
-SENSOR_INTERVAL = 1
-IP = "localhost"
+IP = "10.200.130.32"
 PORT = 1234
-temp = 0
-humidity = 0
+
+SENSOR_INTERVAL = 1
 time_of_measurement = datetime.datetime.utcnow().strftime("%H:%M:%S")
 location = "Home"
 data = {"time": time_of_measurement,
         "location": location,
-        "temperature": temp,
-        "humidity": humidity}
+        "temperature": 0,
+        "humidity": 0}
 
 
 def record_data():
@@ -24,28 +24,26 @@ def record_data():
 
 
 def get_measurement():
-    global time_of_measurement
-    global temp
-    global humidity
     while True:
         time.sleep(SENSOR_INTERVAL)
         data["time"] = get_time()
-        data["temperature"] = get_temperature()
-        data["humidity"] = get_humidity()
-        temp = get_temperature()
-        humidity = get_humidity()
+        result = poll_sensor()
+        if hasattr(result, "error_code"):
+            data["temperature"] = result.temperature
+            data["humidity"] = result.humidity
 
 
 def get_time():
     return datetime.datetime.utcnow().strftime("%H:%M:%S")
 
 
-def get_temperature():
-    return random.randint(1, 10)
-
-
-def get_humidity():
-    return random.randint(1, 100)
+def poll_sensor():
+    instance = dht11.DHT11(pin=17)
+    result = instance.read()
+    if result.is_valid():
+        return result
+    else:
+        print("Error: %d" % result.error_code)
 
 
 def send_data(client_socket):
@@ -65,6 +63,7 @@ def handle_connection(s, msg):
 
 
 def listen_for_connection():
+    print(f"Server is running on {IP}:{PORT}")
     while True:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -76,6 +75,13 @@ def listen_for_connection():
         handle_connection(s, msg)
 
 
+def sensor_setup():
+    GPIO.setwarnings(False)
+    GPIO.setmode(GPIO.BCM)
+    GPIO.cleanup()
+
+
 if __name__ == "__main__":
+    sensor_setup()
     record_data()
     listen_for_connection()
