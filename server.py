@@ -11,10 +11,8 @@ IP = "10.200.130.32"
 PORT = 1234
 
 SENSOR_INTERVAL = 1
-time_of_measurement = datetime.datetime.utcnow().strftime("%H:%M:%S")
-location = "Home"
-data = {"time": time_of_measurement,
-        "location": location,
+data = {"time": datetime.datetime.utcnow().strftime("%H:%M:%S"),
+        "location": "Home",
         "temperature": 0,
         "humidity": 0}
 
