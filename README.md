@@ -7,6 +7,7 @@ som ved forbindelse fra en client socket sender dette data tilbage
 
 
 ### Overvejelser af features / forbedringer:
+- Generel fejlhåndtering
 - TimeOut/FailSafe
 - Multiple Connection
 - Håndtering af socket connection
