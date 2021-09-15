@@ -9,7 +9,7 @@ som ved forbindelse fra en client socket sender dette data tilbage
 ### Overvejelser af features / forbedringer:
 - TimeOut/FailSafe
 - Multiple Connection
-- håndtering af socket connection
+- Håndtering af socket connection
 - Dato
 - Database til håndtering af målinger over længere tid/dage.
 
