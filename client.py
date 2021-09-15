@@ -1,7 +1,7 @@
 import socket
 import time
 
-IP = "10.200.130.32"
+IP = "127.0.0.1"
 PORT = 1234
 
 
@@ -19,6 +19,18 @@ def shutdown_server():
     server_socket.send(bytes("shutdown", "utf-8"))
 
 
+def stop_sensing():
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.connect((IP, PORT))
+    server_socket.send(bytes("stop", "utf-8"))
+
+
+def stop_sensing():
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.connect((IP, PORT))
+    server_socket.send(bytes("start", "utf-8"))
+
+
 def set_sensor_interval(seconds):
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.connect((IP, PORT))
@@ -29,3 +41,4 @@ if __name__ == "__main__":
     while True:
         time.sleep(1)
         get_data()
+        stop_sensing()
