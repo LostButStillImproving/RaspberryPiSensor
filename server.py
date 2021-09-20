@@ -1,7 +1,7 @@
 import RPi.GPIO as GPIO
 import os
 import dht11
-import datetime
+from datetime import datetime
 import json
 import socket
 import time
@@ -10,26 +10,28 @@ from _thread import start_new_thread
 IP_HOME = "192.168.1.118"
 IP_SCHOOL = "10.200.130.32"
 IP_LOCAL = "127.0.0.1"
-PORT = 1233
+PORT = 5000
+BACKLOG = 5
 
 SENSOR_INTERVAL = 1
 is_recording = True
-data = {"time": datetime.datetime.utcnow().strftime("%H:%M:%S"),
+data = {"time": datetime.utcnow().strftime("%H:%M:%S"),
         "location": "Home",
         "temperature": 0,
         "humidity": 0}
 
 
 def listen_for_connection():
-    print(f"Server is running on {IP_SCHOOL}:{PORT}")
-    while True:
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        s.bind((IP_SCHOOL, PORT))
-        s.listen(5)
-        s, address = s.accept()
-        print(f"connection from {address} has been made at time: {get_time()}")
-        start_new_thread(handle_connection, (s,))
+    print(f"Server is running on {IP_LOCAL}:{PORT}")
+
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
+        server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        server.bind((IP_SCHOOL, PORT))
+        server.listen(BACKLOG)
+        while True:
+            server, address = server.accept()
+            print(f"connection from {address} has been made at time: {get_time()}")
+            start_new_thread(handle_connection, (server,))
 
 
 def handle_connection(client_socket):
@@ -71,7 +73,7 @@ def get_measurement():
 
 
 def get_time():
-    return datetime.datetime.utcnow().strftime("%H:%M:%S")
+    return datetime.utcnow().strftime("%H:%M:%S")
 
 
 def sensor_setup():
