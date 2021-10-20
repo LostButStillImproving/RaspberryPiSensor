@@ -1,9 +1,9 @@
 # RaspberryPiSensor
 
-Dette projekt indeholder en socket client og en socket server, begge skrevet i python.
+Dette projekt indeholder en socket client og en socket server, begge skrevet i Python.
 
 server.py køres på en raspberry pi, som periodisk indsamler data(humidity, temp, tid),
-som ved forbindelse fra en client socket sender dette data tilbage
+som ved forbindelse fra en client socket sender dette data tilbage.
 
 ## Opsætning
 
@@ -71,9 +71,9 @@ Vi har bygget en client til at tale sammen med vores server i java. [link til cl
 Programmet er opdelt i 4 pakker: controllers, model, network og util.
 
 ## Controller:
-indeholder Controller klassen som implementerer MeasureementObserver interfacen, dette er for at observere det data der bliver hentet fra serveren, og vise dette som en graf.
+Indeholder Controller klassen, som implementerer MeasureementObserver interfacen, dette er for at observere det data der bliver hentet fra serveren, og vise dette som en graf.
 ## model:
-indeholder ViewModelMeasurement, som implementerer ObserverableMeasurement, Denne klasse er Controllerens kontaktflade med resten af applikationen, og indeholder funktionalitet som at bede ServiceRequest klassen om at hente data fra serveren i samarbejde med ClientConnector klassen. Der benyttes i ViewModelMeasurement-klassen en single threaded executorservice, til at lave at et kald til ServiceRequest klassen hvert sekund, således at data fra server modtages hvert sekond. I vores implementation laves der en NY socket forbindelse i stedet for at den samme holdes åbent, dette er muligvis ikke den optimale måde at gøre dette på. Denne hentede data bliver som nævnt før, observeret og fremvist af controller klassen.
+Indeholder ViewModelMeasurement, som implementerer ObserverableMeasurement, denne klasse er Controllerens kontaktflade med resten af applikationen og indeholder funktionalitet som at bede ServiceRequest klassen om at hente data fra serveren i samarbejde med ClientConnector klassen. Der benyttes i ViewModelMeasurement-klassen en single threaded executorservice, til at lave at et kald til ServiceRequest klassen hvert sekund, således at data fra server modtages hvert sekond. I vores implementation laves der en NY socket forbindelse i stedet for at den samme holdes åbent, dette er muligvis ikke den optimale måde at gøre dette på. Denne hentede data bliver som nævnt før, observeret og fremvist af controller klassen.
 ```java
 public void startListening() {
         if (executorService.isShutdown()) {
